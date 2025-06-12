@@ -35,3 +35,8 @@ def extract_station_measurements(station_id):
         df = pd.concat([df, df_d])
     
     df.to_csv(f"data/measurements_{station_id}.csv", index=False)
+    
+
+def extract_all_stations_measurements():
+    for station_id in Config.STATION_IDS:
+        extract_station_measurements(station_id)
