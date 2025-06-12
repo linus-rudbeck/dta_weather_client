@@ -1,5 +1,6 @@
 import json
 import sqlite3
+from matplotlib import pyplot as plt
 import pandas as pd
 from tqdm import tqdm
 
@@ -58,3 +59,17 @@ def load_measurements_to_db():
     conn.close()
     
     print("All stations loaded to SQL")
+
+
+def create_max_temp_plot():
+
+    for station_id in Config.STATION_IDS:
+        df = pd.read_csv(f"data/measurements_{station_id}.csv", parse_dates=["datetime"])
+        df["date"] = df["datetime"].dt.date
+        daily = df.groupby("date").agg({"temp": "max"}).reset_index()
+        plt.plot(daily["date"], daily["temp"], label=station_id)
+
+    plt.title("Max daily temp for all station")
+    plt.xlabel("Date")
+    plt.ylabel("Max temp")
+    plt.savefig("data/daily_max_temp.png")

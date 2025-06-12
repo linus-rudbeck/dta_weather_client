@@ -7,3 +7,4 @@ def run():
     etl.load_stations_to_json()
     etl.extract_all_stations_measurements()
     etl.load_measurements_to_db()
+    etl.create_max_temp_plot()
