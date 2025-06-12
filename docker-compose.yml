@@ -1,0 +1,6 @@
+services:
+
+  weather_api:
+    image: rudbeck/demo_weather_api
+    ports:
+      - "5555:5555"
