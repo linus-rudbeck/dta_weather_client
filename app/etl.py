@@ -1,9 +1,12 @@
 import json
+import sqlite3
 import pandas as pd
 from tqdm import tqdm
 
 from app.api_client import get_measurements_df, get_station_metadata
 from app.config import Config
+
+
 
 
 def extract_station_data():
@@ -40,3 +43,18 @@ def extract_station_measurements(station_id):
 def extract_all_stations_measurements():
     for station_id in Config.STATION_IDS:
         extract_station_measurements(station_id)
+
+
+def load_measurements_to_db():
+    conn = sqlite3.connect(Config.DB_CONNECTION)
+    conn.execute("DROP TABLE IF EXISTS measurements")
+    
+    for station_id in Config.STATION_IDS:
+        print(f"Loading {station_id} to SQL")
+        df = pd.read_csv(f"data/measurements_{station_id}.csv")
+        df.to_sql("measurements", conn, if_exists="append")
+    
+    conn.commit()
+    conn.close()
+    
+    print("All stations loaded to SQL")
